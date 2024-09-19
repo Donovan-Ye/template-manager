@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
+  failOnWarn: false,
   entries: [
     'src/index',
   ],
@@ -9,8 +10,6 @@ export default defineBuildConfig({
   clean: true,
   rollup: {
     emitCJS: true,
-    inlineDependencies: true,
-
   },
   alias: {
     '@': fileURLToPath(new URL('./', import.meta.url)),
