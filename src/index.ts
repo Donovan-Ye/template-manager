@@ -4,6 +4,7 @@ import process from 'node:process'
 import { Command } from 'commander'
 import packageInfo from '../package.json'
 import { list } from './commands/list'
+import { set } from './commands/set'
 
 process.on('SIGINT', () => process.exit(0))
 process.on('SIGTERM', () => process.exit(0))
@@ -18,7 +19,9 @@ async function main(): Promise<void> {
       'display the version number',
     )
 
-  program.addCommand(list)
+  program
+    .addCommand(list)
+    .addCommand(set)
 
   program.parse()
 }

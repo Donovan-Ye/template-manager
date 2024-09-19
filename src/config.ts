@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import { parseObjectValue, stringifyObjectValue } from '@/utils/json'
 import ini from 'ini'
-import { TMRC } from './constants'
+import { EXPIRATION_TIME, TMRC } from './constants'
 import type { Config } from './types/config'
 
 const defaultConfig: Config = {
@@ -26,4 +26,11 @@ export function updateConfig(newConfig: Config): void {
   config = { ...config, ...newConfig }
 
   fs.writeFileSync(TMRC, ini.stringify(stringifyObjectValue(config)))
+}
+
+/**
+ * Update the templates expiration time to ${EXPIRATION_TIME} hours
+ */
+export function updateExpirationTime(): void {
+  updateConfig({ templatesExpirationTime: new Date(new Date().getTime() + EXPIRATION_TIME).toISOString() })
 }

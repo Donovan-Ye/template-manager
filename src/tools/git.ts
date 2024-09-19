@@ -4,8 +4,8 @@ import process from 'node:process'
 import { parseJsonSafely } from '@/utils/json'
 import { logger } from '@/utils/logger'
 import simpleGit from 'simple-git'
-import { getConfig, updateConfig } from '../config'
-import { EXPIRATION_TIME, TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_REPO_GIT } from '../constants'
+import { getConfig, updateExpirationTime } from '../config'
+import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_REPO_GIT } from '../constants'
 import type { TemplatesArray } from '../types/templates'
 
 export async function getTemplateFile(force: boolean = false): Promise<TemplatesArray> {
@@ -36,8 +36,8 @@ export async function getTemplateFile(force: boolean = false): Promise<Templates
     const git = simpleGit()
     await git.clone(TM_REPO_GIT, TEMP_REMO_LOCAL_PATH)
     templateRepository = fs.readdirSync(TEMP_REMO_LOCAL_PATH)
-    // update the templates expiration time to 1 hour
-    updateConfig({ templatesExpirationTime: new Date(new Date().getTime() + EXPIRATION_TIME).toISOString() })
+
+    updateExpirationTime()
   }
 
   const templateFile = templateRepository.find(file => file === TM_FILE_NAME)
@@ -49,4 +49,15 @@ export async function getTemplateFile(force: boolean = false): Promise<Templates
 
   const content = fs.readFileSync(path.join(TEMP_REMO_LOCAL_PATH, templateFile), 'utf-8')
   return parseJsonSafely(content) as TemplatesArray
+}
+
+export async function updateTemplateFile(newTemplates: TemplatesArray, commitMessage: string): Promise<void> {
+  const git = simpleGit(TEMP_REMO_LOCAL_PATH)
+
+  fs.writeFileSync(path.join(TEMP_REMO_LOCAL_PATH, TM_FILE_NAME), JSON.stringify(newTemplates, null, 2))
+  await git.add(TM_FILE_NAME)
+  await git.commit(commitMessage)
+  await git.push()
+
+  updateExpirationTime()
 }
