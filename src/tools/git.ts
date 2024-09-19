@@ -8,6 +8,18 @@ import { getConfig, updateExpirationTime } from '../config'
 import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_REPO_GIT } from '../constants'
 import type { TemplatesArray } from '../types/templates'
 
+export async function cloneTemplate(repoPath: string, localPath: string): Promise<void> {
+  try {
+    const git = simpleGit()
+    await git.clone(repoPath, localPath)
+  }
+
+  catch (error) {
+    logger.error(`${error}Please check if the repository is valid.`)
+    process.exit(1)
+  }
+}
+
 export async function getTemplateFile(force: boolean = false): Promise<TemplatesArray> {
   // check if the templates are expired
   const { templatesExpirationTime } = await getConfig()
@@ -33,8 +45,7 @@ export async function getTemplateFile(force: boolean = false): Promise<Templates
       fs.rmSync(TEMP_REMO_LOCAL_PATH, { recursive: true, force: true })
     }
 
-    const git = simpleGit()
-    await git.clone(TM_REPO_GIT, TEMP_REMO_LOCAL_PATH)
+    await cloneTemplate(TM_REPO_GIT, TEMP_REMO_LOCAL_PATH)
     templateRepository = fs.readdirSync(TEMP_REMO_LOCAL_PATH)
 
     updateExpirationTime()

@@ -4,6 +4,7 @@ import process from 'node:process'
 import { Command } from 'commander'
 import packageInfo from '../package.json'
 import { add } from './commands/add'
+import { create } from './commands/create'
 import { list } from './commands/list'
 import { set } from './commands/set'
 
@@ -24,6 +25,7 @@ async function main(): Promise<void> {
     .addCommand(list)
     .addCommand(set)
     .addCommand(add)
+    .addCommand(create)
 
   program.parse()
 }

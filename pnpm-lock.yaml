@@ -20,6 +20,9 @@ importers:
       ini:
         specifier: ^5.0.0
         version: 5.0.0
+      prompts:
+        specifier: ^2.4.2
+        version: 2.4.2
       simple-git:
         specifier: ^3.25.0
         version: 3.25.0
@@ -42,6 +45,9 @@ importers:
       '@types/node':
         specifier: ^22.5.4
         version: 22.5.4
+      '@types/prompts':
+        specifier: ^2.4.9
+        version: 2.4.9
       bumpp:
         specifier: ^9.5.2
         version: 9.5.2
@@ -933,6 +939,9 @@ packages:
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+
+  '@types/prompts@2.4.9':
+    resolution: {integrity: sha512-qTxFi6Buiu8+50/+3DGIWLHM6QuWsEKugJnnP6iv2Mc4ncxE4A/OJkjuVOA+5X0X1S/nq5VJRa8Lu+nwcvbrKA==}
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -3625,6 +3634,11 @@ snapshots:
       undici-types: 6.19.8
 
   '@types/normalize-package-data@2.4.4': {}
+
+  '@types/prompts@2.4.9':
+    dependencies:
+      '@types/node': 22.5.4
+      kleur: 3.0.3
 
   '@types/resolve@1.20.2': {}
 

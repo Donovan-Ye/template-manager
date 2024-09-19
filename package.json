@@ -54,6 +54,7 @@
     "commander": "^12.1.0",
     "fs-extra": "^11.2.0",
     "ini": "^5.0.0",
+    "prompts": "^2.4.2",
     "simple-git": "^3.25.0"
   },
   "devDependencies": {
@@ -63,6 +64,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/ini": "^4.1.1",
     "@types/node": "^22.5.4",
+    "@types/prompts": "^2.4.9",
     "bumpp": "^9.5.2",
     "eslint": "^9.9.1",
     "esno": "^4.7.0",
