@@ -20,12 +20,12 @@ export async function cloneTemplate(repoPath: string, localPath: string): Promis
   }
 }
 
-interface GetTemplateFileOptions {
+export interface TemplateOptions {
   force?: boolean
   includeHome?: boolean
 }
 
-export async function getTemplateFile({ force, includeHome }: GetTemplateFileOptions = {}): Promise<TemplatesArray> {
+export async function getTemplateFile({ force, includeHome }: TemplateOptions = {}): Promise<TemplatesArray> {
   // check if the templates are expired
   const { templatesExpirationTime } = await getConfig()
   const isExpired = new Date().getTime() > new Date(templatesExpirationTime ?? '').getTime()

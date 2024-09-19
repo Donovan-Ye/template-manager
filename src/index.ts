@@ -7,6 +7,7 @@ import { add } from './commands/add'
 import { create } from './commands/create'
 import { list } from './commands/list'
 import { open } from './commands/open'
+import { remove } from './commands/remove'
 import { set } from './commands/set'
 
 process.on('SIGINT', () => process.exit(0))
@@ -28,6 +29,7 @@ async function main(): Promise<void> {
     .addCommand(add)
     .addCommand(create)
     .addCommand(open)
+    .addCommand(remove)
 
   program.parse()
 }

@@ -2,27 +2,13 @@ import process from 'node:process'
 import { logger } from '@/utils/logger'
 import { Command } from 'commander'
 import openUrl from 'open'
-import prompts from 'prompts'
-import { getTemplateFile } from '../tools/git'
-import type { Template } from '../types/templates'
+import { selectTemplatePrompt } from '../tools/selectTemplatePrompt'
 
 export const open = new Command()
   .name('open')
   .description('Choose a template to open.')
   .action(async () => {
-    const templates = await getTemplateFile({ includeHome: true })
-
-    const { template }: { template: Template } = await prompts({
-      type: 'select',
-      name: 'template',
-      message: 'Choose a template to open.',
-      choices: templates.map(template => ({
-        title: template.name,
-        description: template.path,
-        value: template,
-      })),
-      initial: 0,
-    })
+    const template = await selectTemplatePrompt({ includeHome: true })
 
     let path = template.path
     if (path.startsWith('git@')) {

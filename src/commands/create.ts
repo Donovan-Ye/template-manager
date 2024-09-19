@@ -1,26 +1,14 @@
 import { logger } from '@/utils/logger'
 import { Command } from 'commander'
 import prompts from 'prompts'
-import { cloneTemplate, getTemplateFile } from '../tools/git'
-import type { Template } from '../types/templates'
+import { cloneTemplate } from '../tools/git'
+import { selectTemplatePrompt } from '../tools/selectTemplatePrompt'
 
 export const create = new Command()
   .name('create')
   .description('Choose a template to create a new project.')
   .action(async () => {
-    const templates = await getTemplateFile()
-
-    const { template }: { template: Template } = await prompts({
-      type: 'select',
-      name: 'template',
-      message: 'Choose a template to create a new project.',
-      choices: templates.map(template => ({
-        title: template.name,
-        description: template.path,
-        value: template,
-      })),
-      initial: 0,
-    })
+    const template = await selectTemplatePrompt()
 
     const { path }: { path: string } = await prompts({
       type: 'text',
