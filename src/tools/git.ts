@@ -15,7 +15,7 @@ export async function cloneTemplate(repoPath: string, localPath: string): Promis
   }
 
   catch (error) {
-    logger.error(`${error}Please check if the repository is valid.`)
+    logger.error(`${error}`)
     process.exit(1)
   }
 }
