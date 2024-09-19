@@ -20,6 +20,6 @@ export const list = new Command()
   .option('-f, --force', 'Force to get templates from the template repository')
   .description('List all available templates from your template repository, will be cached for 1 hour. You can use -f to force to get templates from the template repository.')
   .action(async ({ force }) => {
-    const templates = await getTemplateFile(force)
+    const templates = await getTemplateFile({ force })
     listTemplates(templates)
   })

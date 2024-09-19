@@ -6,6 +6,7 @@ import packageInfo from '../package.json'
 import { add } from './commands/add'
 import { create } from './commands/create'
 import { list } from './commands/list'
+import { open } from './commands/open'
 import { set } from './commands/set'
 
 process.on('SIGINT', () => process.exit(0))
@@ -26,6 +27,7 @@ async function main(): Promise<void> {
     .addCommand(set)
     .addCommand(add)
     .addCommand(create)
+    .addCommand(open)
 
   program.parse()
 }

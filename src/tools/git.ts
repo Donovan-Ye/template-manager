@@ -20,7 +20,12 @@ export async function cloneTemplate(repoPath: string, localPath: string): Promis
   }
 }
 
-export async function getTemplateFile(force: boolean = false): Promise<TemplatesArray> {
+interface GetTemplateFileOptions {
+  force?: boolean
+  includeHome?: boolean
+}
+
+export async function getTemplateFile({ force, includeHome }: GetTemplateFileOptions = {}): Promise<TemplatesArray> {
   // check if the templates are expired
   const { templatesExpirationTime } = await getConfig()
   const isExpired = new Date().getTime() > new Date(templatesExpirationTime ?? '').getTime()
@@ -59,7 +64,16 @@ export async function getTemplateFile(force: boolean = false): Promise<Templates
   }
 
   const content = fs.readFileSync(path.join(TEMP_REMO_LOCAL_PATH, templateFile), 'utf-8')
-  return parseJsonSafely(content) as TemplatesArray
+  const templates = parseJsonSafely(content) as TemplatesArray
+
+  if (includeHome) {
+    templates.unshift({
+      name: 'Home',
+      path: TM_REPO_GIT ?? '',
+    })
+  }
+
+  return templates
 }
 
 export async function updateTemplateFile(newTemplates: TemplatesArray, commitMessage: string): Promise<void> {
