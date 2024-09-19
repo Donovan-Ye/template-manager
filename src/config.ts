@@ -22,13 +22,8 @@ export async function getConfig(): Promise<Config> {
   return config
 }
 
-export function updateConfig(newConfig: Config, updateRepository: boolean = false): void {
+export function updateConfig(newConfig: Config): void {
   config = { ...config, ...newConfig }
 
   fs.writeFileSync(TMRC, ini.stringify(stringifyObjectValue(config)))
-
-  if (updateRepository) {
-    // const git = simpleGit()
-
-  }
 }
