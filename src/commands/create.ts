@@ -6,9 +6,8 @@ import type { Template } from '../types/templates'
 
 export const create = new Command()
   .name('create')
-  .argument('[path]', 'The path to create the project')
   .description('Choose a template to create a new project.')
-  .action(async (path?: string) => {
+  .action(async () => {
     const templates = await getTemplateFile()
 
     const { template }: { template: Template } = await prompts({
@@ -21,6 +20,13 @@ export const create = new Command()
         value: template,
       })),
       initial: 0,
+    })
+
+    const { path }: { path: string } = await prompts({
+      type: 'text',
+      name: 'path',
+      message: 'Enter the path to create the project',
+      initial: `./${template.name}`,
     })
 
     const localPath = path ?? `./${template.name}`
