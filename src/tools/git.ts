@@ -8,12 +8,18 @@ import { getConfig, updateExpirationTime } from '../config'
 import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_REPO_GIT } from '../constants'
 import type { TemplatesArray } from '../types/templates'
 
-export async function cloneTemplate(repoPath: string, localPath: string): Promise<void> {
+export async function cloneTemplate(repoPath: string, localPath: string, clean: boolean = false): Promise<void> {
   try {
     const git = simpleGit()
     await git.clone(repoPath, localPath)
+    if (clean) {
+      fs.rmSync(path.join(localPath, '.git'), { recursive: true, force: true })
+      const newGit = simpleGit(localPath)
+      await newGit.init()
+      await newGit.add('.')
+      await newGit.commit('Initial commit')
+    }
   }
-
   catch (error) {
     logger.error(`${error}`)
     process.exit(1)
