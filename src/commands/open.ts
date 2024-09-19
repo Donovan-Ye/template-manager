@@ -26,7 +26,7 @@ export const open = new Command()
 
     let path = template.path
     if (path.startsWith('git@')) {
-      path = `https://github.com/${path.split(':')[1]}`
+      path = `https://github.com/${path?.split(':')?.[1]}`
     }
     else if (!path.startsWith('http')) {
       logger.error('It seems that the path is not a valid URL, please check it and try again.')

@@ -17,8 +17,8 @@ export const set = new Command()
     }
     templates[index].path = path
 
-    logger.info(`Updating template ${template} to ${path}...\n`)
-    await updateTemplateFile(templates, `set: update template ${template} to ${path}`)
+    logger.info(`Updating template '${template}' to '${path}'...\n`)
+    await updateTemplateFile(templates, `set: update template '${template}' to '${path}'`)
 
     logger.success(`Template updated successfully. Use \`list\` to see the updated templates.`)
   })
