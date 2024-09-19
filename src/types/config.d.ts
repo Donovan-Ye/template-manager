@@ -1,4 +1,4 @@
 export interface Config {
-  templates: TemplatesArray
-  templatesExpirationTime: string
+  templates?: TemplatesArray
+  templatesExpirationTime?: string
 }

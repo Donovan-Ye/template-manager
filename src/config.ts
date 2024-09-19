@@ -5,7 +5,6 @@ import { TMRC } from './constants'
 import type { Config } from './types/config'
 
 const defaultConfig: Config = {
-  templates: [],
   templatesExpirationTime: new Date().toISOString(),
 }
 
@@ -23,8 +22,13 @@ export async function getConfig(): Promise<Config> {
   return config
 }
 
-export function updateConfig(newConfig: Config): void {
+export function updateConfig(newConfig: Config, updateRepository: boolean = false): void {
   config = { ...config, ...newConfig }
 
   fs.writeFileSync(TMRC, ini.stringify(stringifyObjectValue(config)))
+
+  if (updateRepository) {
+    // const git = simpleGit()
+
+  }
 }
