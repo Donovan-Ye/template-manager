@@ -4,8 +4,8 @@ import process from 'node:process'
 import { parseJsonSafely } from '@/utils/json'
 import { logger } from '@/utils/logger'
 import simpleGit from 'simple-git'
-import { getConfig } from '../config'
-import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_REPO_GIT } from '../constants'
+import { getConfig, updateConfig } from '../config'
+import { EXPIRATION_TIME, TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_REPO_GIT } from '../constants'
 import type { TemplatesArray } from '../types/templates'
 
 export async function getTemplateFile(force: boolean = false): Promise<TemplatesArray> {
@@ -17,7 +17,7 @@ export async function getTemplateFile(force: boolean = false): Promise<Templates
   let templateRepository = fs.readdirSync(TEMP_REMO_LOCAL_PATH)
 
   // if template repository is not in local or is expired or force is true, clone the repository from the remote repository
-  if (!templateRepository && (isExpired || force)) {
+  if (!templateRepository || isExpired || force) {
     if (!TM_REPO_GIT) {
       logger.warn(
         'TM_REPO_GIT is not set. Please set the TM_REPO_GIT environment variable.\n'
@@ -29,9 +29,15 @@ export async function getTemplateFile(force: boolean = false): Promise<Templates
 
     logger.info(`Getting templates from ${TM_REPO_GIT}...\n`)
 
+    if (templateRepository) {
+      fs.rmSync(TEMP_REMO_LOCAL_PATH, { recursive: true, force: true })
+    }
+
     const git = simpleGit()
     await git.clone(TM_REPO_GIT, TEMP_REMO_LOCAL_PATH)
     templateRepository = fs.readdirSync(TEMP_REMO_LOCAL_PATH)
+    // update the templates expiration time to 1 hour
+    updateConfig({ templatesExpirationTime: new Date(new Date().getTime() + EXPIRATION_TIME).toISOString() })
   }
 
   const templateFile = templateRepository.find(file => file === TM_FILE_NAME)
