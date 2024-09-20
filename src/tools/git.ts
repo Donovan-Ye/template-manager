@@ -5,7 +5,7 @@ import { parseJsonSafely } from '@/utils/json'
 import { logger } from '@/utils/logger'
 import simpleGit from 'simple-git'
 import { getConfig, updateExpirationTime } from '../config'
-import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_REPO_GIT } from '../constants'
+import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_README, TM_README_END, TM_README_START, TM_REPO_GIT } from '../constants'
 import type { TemplatesArray } from '../types/templates'
 
 export async function cloneTemplate(repoPath: string, localPath: string, clean: boolean = false): Promise<void> {
@@ -85,8 +85,28 @@ export async function getTemplateFile({ force, includeHome }: TemplateOptions = 
 export async function updateTemplateFile(newTemplates: TemplatesArray, commitMessage: string): Promise<void> {
   const git = simpleGit(TEMP_REMO_LOCAL_PATH)
 
+  // update the templates file
   fs.writeFileSync(path.join(TEMP_REMO_LOCAL_PATH, TM_FILE_NAME), JSON.stringify(newTemplates, null, 2))
-  await git.add(TM_FILE_NAME)
+
+  // update the README.md file
+  let readmeContent = fs.readFileSync(path.join(TEMP_REMO_LOCAL_PATH, TM_README), 'utf-8')
+  const regex = new RegExp(`${TM_README_START}([\\s\\S]*)${TM_README_END}`)
+  const matchRes = readmeContent.match(regex)
+
+  const templatesMd = `\n\n${newTemplates.map(template => `- [${template.name}](${template.path})`).join('\n')}\n\n`
+  if (!matchRes) {
+    logger.error(`Failed to match the content between ${TM_README_START} and ${TM_README_END} in the README.md file.\n`
+    + 'Will append the new templates to the end of the README.md file.')
+
+    readmeContent += templatesMd
+  }
+  else {
+    const originTmList = matchRes[1]
+    readmeContent = readmeContent.replace(originTmList, templatesMd)
+  }
+  fs.writeFileSync(path.join(TEMP_REMO_LOCAL_PATH, TM_README), readmeContent)
+
+  await git.add('.')
   await git.commit(commitMessage)
   await git.push()
 

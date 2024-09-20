@@ -25,6 +25,21 @@ export const TMRC = path.join(HOME, '.tmrc')
 export const TM_FILE_NAME = 'templates.json'
 
 /**
+ * The name of the README file.
+ */
+export const TM_README = 'README.md'
+
+/**
+ * The start of the README file that contains the templates information.
+ */
+export const TM_README_START = '<!-- tm-list-start -->'
+
+/**
+ * The end of the README file that contains the templates information.
+ */
+export const TM_README_END = '<!-- tm-list-end -->'
+
+/**
  * The expiration time of the templates in milliseconds.
  * @default 1 hour
  */
