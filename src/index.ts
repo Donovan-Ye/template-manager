@@ -16,8 +16,7 @@ process.on('SIGTERM', () => process.exit(0))
 
 async function main(): Promise<void> {
   const program = new Command()
-    .name(packageInfo.name!)
-    .alias('tm')
+    .name('tm')
     .description(packageInfo.description!)
     .version(
       packageInfo.version!,
