@@ -11,7 +11,7 @@ export const TM_REPO_GIT = process.env.TM_REPO_GIT
 /**
  * The name of the temporary repository that used to clone the templates repository.
  */
-export const TEMP_REMO_LOCAL_PATH = path.join(HOME, '.template-repository')
+export const TEMP_REMO_LOCAL_PATH = path.join(HOME, '.tm-repo')
 
 /**
  * The path to the .tmrc file.
@@ -44,3 +44,22 @@ export const TM_README_END = '<!-- tm-list-end -->'
  * @default 1 hour
  */
 export const EXPIRATION_TIME = 1000 * 60 * 60
+
+/**
+ * The initial content of the README file. Used in the `init` command.
+ */
+export const README_INIT_CONTENT = `# Templates Repository
+
+This repository is used to store and manage templates for the [templates manager](https://github.com/Donovan-Ye/template-manager).
+
+## My templates
+
+${TM_README_START}
+
+${TM_README_END}
+`
+
+/**
+ * The initial content of the templates file. Used in the `init` command.
+ */
+export const TM_FILE_INIT_CONTENT = `[]`

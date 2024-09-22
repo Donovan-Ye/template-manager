@@ -3,53 +3,21 @@ import path from 'node:path'
 import process from 'node:process'
 import simpleGit from 'simple-git'
 import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_README, TM_README_END, TM_README_START, TM_REPO_GIT } from '../constants'
-import { getConfig, updateExpirationTime } from './config'
+import { getConfig, updateExpirationTime } from '../utils/config'
 import { parseJsonSafely } from './json'
 import { logger } from './logger'
 import type { TemplatesArray } from '../types/templates'
-
-/**
- * Remove the .git directory from the local path.
- * @param localPath - The local path to remove the .git directory from.
- */
-export async function rmGit(localPath: string): Promise<void> {
-  fs.rmSync(path.join(localPath, '.git'), { recursive: true, force: true })
-}
-
-/**
- * Remove the local template repository.
- */
-export async function rmLocalTemplateRepo(): Promise<void> {
-  fs.rmSync(TEMP_REMO_LOCAL_PATH, { recursive: true, force: true })
-}
-
-export async function initGitRepo(repoPath: string, remoteUrl?: string): Promise<void> {
-  const git = simpleGit(repoPath)
-  await git.init()
-  await git.add('.')
-  await git.commit('Initial commit')
-
-  if (remoteUrl) {
-    try {
-      await git.remote(['add', 'origin', remoteUrl])
-      await git.push(['-u', 'origin', 'main'])
-    }
-    catch (error) {
-      logger.error(`${error}`)
-
-      logger.warn(`Or you can also manually operate the repository at ${repoPath}.`)
-      process.exit(1)
-    }
-  }
-}
 
 export async function cloneTemplate(repoPath: string, localPath: string, clean: boolean = false): Promise<void> {
   try {
     const git = simpleGit()
     await git.clone(repoPath, localPath)
     if (clean) {
-      await rmGit(localPath)
-      await initGitRepo(localPath)
+      fs.rmSync(path.join(localPath, '.git'), { recursive: true, force: true })
+      const newGit = simpleGit(localPath)
+      await newGit.init()
+      await newGit.add('.')
+      await newGit.commit('Initial commit')
     }
   }
   catch (error) {
@@ -75,7 +43,8 @@ export async function getTemplateFile({ force, includeHome }: TemplateOptions = 
   if (!templateRepository || isExpired || force) {
     if (!TM_REPO_GIT) {
       logger.warn(
-        'TM_REPO_GIT is not set. Please set the TM_REPO_GIT environment variable or run `init` command to initialize the template repository.\n'
+        'TM_REPO_GIT is not set. Please set the TM_REPO_GIT environment variable.\n'
+        + 'TM_REPO_GIT is git path to the directory with templates info.\n'
         + 'You can find more information about this variable in the README.md file.',
       )
       process.exit(1)
@@ -84,7 +53,7 @@ export async function getTemplateFile({ force, includeHome }: TemplateOptions = 
     logger.info(`Getting templates from ${TM_REPO_GIT}...\n`)
 
     if (templateRepository) {
-      await rmLocalTemplateRepo()
+      fs.rmSync(TEMP_REMO_LOCAL_PATH, { recursive: true, force: true })
     }
 
     await cloneTemplate(TM_REPO_GIT, TEMP_REMO_LOCAL_PATH)
