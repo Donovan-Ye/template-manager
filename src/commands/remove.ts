@@ -1,8 +1,8 @@
 import process from 'node:process'
-import { logger } from '@/utils/logger'
 import { Command } from 'commander'
-import { getTemplateFile, updateTemplateFile } from '../tools/git'
-import { selectTemplatePrompt } from '../tools/selectTemplatePrompt'
+import { getTemplateFile, updateTemplateFile } from '../utils/git'
+import { logger } from '../utils/logger'
+import { selectTemplatePrompt } from '../utils/selectTemplatePrompt'
 
 export const remove = new Command()
   .name('remove')

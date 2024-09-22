@@ -1,7 +1,7 @@
-import { geneDashLine } from '@/utils/format'
-import { logger } from '@/utils/logger'
 import { Command } from 'commander'
-import { getTemplateFile } from '../tools/git'
+import { geneDashLine } from '../utils/format'
+import { getTemplateFile } from '../utils/git'
+import { logger } from '../utils/logger'
 import type { TemplatesArray } from '../types/templates'
 
 function listTemplates(templates: TemplatesArray): void {

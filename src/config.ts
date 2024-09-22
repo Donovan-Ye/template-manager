@@ -1,7 +1,7 @@
 import fs from 'node:fs'
-import { parseObjectValue, stringifyObjectValue } from '@/utils/json'
 import ini from 'ini'
 import { EXPIRATION_TIME, TMRC } from './constants'
+import { parseObjectValue, stringifyObjectValue } from './utils/json'
 import type { Config } from './types/config'
 
 const defaultConfig: Config = {

@@ -1,8 +1,8 @@
-import { logger } from '@/utils/logger'
 import { Command } from 'commander'
 import prompts from 'prompts'
-import { cloneTemplate } from '../tools/git'
-import { selectTemplatePrompt } from '../tools/selectTemplatePrompt'
+import { cloneTemplate } from '../utils/git'
+import { logger } from '../utils/logger'
+import { selectTemplatePrompt } from '../utils/selectTemplatePrompt'
 
 export const pull = new Command()
   .name('pull')

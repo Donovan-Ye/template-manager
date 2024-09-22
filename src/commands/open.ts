@@ -1,8 +1,8 @@
 import process from 'node:process'
-import { logger } from '@/utils/logger'
 import { Command } from 'commander'
 import openUrl from 'open'
-import { selectTemplatePrompt } from '../tools/selectTemplatePrompt'
+import { logger } from '../utils/logger'
+import { selectTemplatePrompt } from '../utils/selectTemplatePrompt'
 
 export const open = new Command()
   .name('open')

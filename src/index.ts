@@ -5,6 +5,7 @@ import { Command } from 'commander'
 import packageInfo from '../package.json'
 import { add } from './commands/add'
 import { create } from './commands/create'
+import { init } from './commands/init'
 import { list } from './commands/list'
 import { open } from './commands/open'
 import { pull } from './commands/pull'
@@ -32,6 +33,7 @@ async function main(): Promise<void> {
     .addCommand(open)
     .addCommand(remove)
     .addCommand(pull)
+    .addCommand(init)
 
   program.parse()
 }

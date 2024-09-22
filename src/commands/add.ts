@@ -1,7 +1,7 @@
 import process from 'node:process'
-import { logger } from '@/utils/logger'
 import { Command } from 'commander'
-import { getTemplateFile, updateTemplateFile } from '../tools/git'
+import { getTemplateFile, updateTemplateFile } from '../utils/git'
+import { logger } from '../utils/logger'
 
 export const add = new Command()
   .name('add')
