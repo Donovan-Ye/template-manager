@@ -26,7 +26,7 @@ Template Manager can help you manage templates in a single git repository, and y
 
 ### Install the template manager
 ```bash
-npm install -g template-manager
+npm install -g template-manager-cli
 ```
 
 ### Initialize a new templates repository
