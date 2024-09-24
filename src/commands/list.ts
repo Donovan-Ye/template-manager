@@ -17,7 +17,7 @@ function listTemplates(templates: TemplatesArray): void {
     return `${template.name}${geneDashLine(template.name, length)}${template.path}`
   })
 
-  logger.log(`\n${messages.join('\n')}\n`)
+  logger.log(`${messages.join('\n')}`)
 }
 
 export const list = new Command()
