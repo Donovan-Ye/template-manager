@@ -4,8 +4,8 @@ import process from 'node:process'
 import simpleGit from 'simple-git'
 import { TEMP_REMO_LOCAL_PATH, TM_FILE_NAME, TM_README, TM_README_END, TM_README_START, TM_REPO_GIT } from '../constants'
 import { getConfig, updateExpirationTime } from '../utils/config'
-import { parseJsonSafely } from './json'
-import { logger } from './logger'
+import { parseJsonSafely } from '../utils/json'
+import { logger } from '../utils/logger'
 import type { TemplatesArray } from '../types/templates'
 
 export async function cloneTemplate(repoPath: string, localPath: string, clean: boolean = false): Promise<void> {
