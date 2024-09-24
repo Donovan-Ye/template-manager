@@ -7,7 +7,7 @@ export const add = new Command()
   .name('add')
   .argument('<template>', 'The template to add')
   .argument('<path>', 'The path to set the template')
-  .description('Add a new template')
+  .description('Add a new template.')
   .action(async (template, path) => {
     const templates = await getTemplateFile()
     if (templates.some(t => t.name === template)) {

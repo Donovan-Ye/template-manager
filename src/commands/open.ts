@@ -6,7 +6,7 @@ import { selectTemplatePrompt } from '../utils/selectTemplatePrompt'
 
 export const open = new Command()
   .name('open')
-  .description('Choose a template to open.')
+  .description('Choose a template to open in the browser.')
   .action(async () => {
     const template = await selectTemplatePrompt({ includeHome: true })
 

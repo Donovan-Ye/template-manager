@@ -26,14 +26,14 @@ async function main(): Promise<void> {
     )
 
   program
+    .addCommand(init)
+    .addCommand(add)
     .addCommand(list)
     .addCommand(set)
-    .addCommand(add)
-    .addCommand(create)
-    .addCommand(open)
     .addCommand(remove)
+    .addCommand(open)
+    .addCommand(create)
     .addCommand(pull)
-    .addCommand(init)
 
   program.parse()
 }

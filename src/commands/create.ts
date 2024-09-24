@@ -6,7 +6,7 @@ import { selectTemplatePrompt } from '../utils/selectTemplatePrompt'
 
 export const create = new Command()
   .name('create')
-  .description('Choose a template to create a new project.')
+  .description('Choose a template to create a new project, all the git history will be removed.')
   .action(async () => {
     const template = await selectTemplatePrompt()
 

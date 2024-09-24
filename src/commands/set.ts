@@ -7,7 +7,7 @@ export const set = new Command()
   .name('set')
   .argument('<template>', 'The template to set')
   .argument('<path>', 'The path to set the template')
-  .description('Set a template to a path')
+  .description('Update a template to a path.')
   .action(async (template, path) => {
     const templates = await getTemplateFile()
     const index = templates.findIndex(t => t.name === template)

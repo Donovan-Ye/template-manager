@@ -8,7 +8,7 @@ export const remove = new Command()
   .name('remove')
   .alias('rm')
   .argument('[template]', 'The template to remove')
-  .description('Remove a template')
+  .description('Remove a template.')
   .action(async (templateName) => {
     let selectedTemplateName = templateName
     if (!selectedTemplateName) {

@@ -6,7 +6,7 @@ import { selectTemplatePrompt } from '../utils/selectTemplatePrompt'
 
 export const pull = new Command()
   .name('pull')
-  .description('Pull a template from the remote repository.')
+  .description('Pull a template from the remote repository, all the git history will be preserved.')
   .action(async () => {
     const template = await selectTemplatePrompt()
 
