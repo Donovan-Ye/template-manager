@@ -1,6 +1,7 @@
 import process from 'node:process'
 import { Command } from 'commander'
 import openUrl from 'open'
+import { repoPathToUrl } from '../utils/git'
 import { logger } from '../utils/logger'
 import { selectTemplatePrompt } from '../utils/selectTemplatePrompt'
 
@@ -10,11 +11,8 @@ export const open = new Command()
   .action(async () => {
     const template = await selectTemplatePrompt({ includeHome: true })
 
-    let path = template.path
-    if (path.startsWith('git@')) {
-      path = `https://github.com/${path?.split(':')?.[1]}`
-    }
-    else if (!path.startsWith('http')) {
+    const path = repoPathToUrl(template.path)
+    if (!path.startsWith('http')) {
       logger.error('It seems that the path is not a valid URL, please check it and try again.')
       process.exit(1)
     }

@@ -9,6 +9,28 @@ import { logger } from './logger'
 import type { TemplatesArray } from '../types/templates'
 
 /**
+ * If the repository path is a SSH path, convert it to the URL.
+ * @param repoPath - The repository path, ssh or http(s) path.
+ * @returns The URL.
+ */
+export function repoPathToUrl(repoPath: string): string {
+  if (repoPath.startsWith('git@')) {
+    const regex = /^(git@[^:]+):(.*)\.git$/
+    const matchRes = repoPath.match(regex)
+    if (!matchRes) {
+      logger.error(`Failed to match the SSH path ${repoPath}`)
+      process.exit(1)
+    }
+    const [, host, path] = matchRes
+    return `https://${host}/${path}`
+  }
+  else if (repoPath.startsWith('http')) {
+    return repoPath
+  }
+  return ''
+}
+
+/**
  * Remove the .git directory from the local path.
  * @param localPath - The local path to remove the .git directory from.
  */
@@ -124,7 +146,7 @@ export async function updateTemplateFile(newTemplates: TemplatesArray, commitMes
   const regex = new RegExp(`${TM_README_START}([\\s\\S]*)${TM_README_END}`)
   const matchRes = readmeContent.match(regex)
 
-  const templatesMd = `\n\n${newTemplates.map(template => `- [${template.name}](${template.path})`).join('\n')}\n\n`
+  const templatesMd = `${TM_README_START}\n\n${newTemplates.map(template => `- [${template.name}](${repoPathToUrl(template.path)})`).join('\n')}\n\n${TM_README_END}`
   if (!matchRes) {
     logger.error(`Failed to match the content between ${TM_README_START} and ${TM_README_END} in the README.md file.\n`
     + 'Will append the new templates to the end of the README.md file.')
@@ -132,7 +154,7 @@ export async function updateTemplateFile(newTemplates: TemplatesArray, commitMes
     readmeContent += templatesMd
   }
   else {
-    const originTmList = matchRes[1]
+    const originTmList = `${TM_README_START}${matchRes[1]}${TM_README_END}`
     readmeContent = readmeContent.replace(originTmList, templatesMd)
   }
   fs.writeFileSync(path.join(TEMP_REMO_LOCAL_PATH, TM_README), readmeContent)
