@@ -34,7 +34,9 @@
       ]
     }
   },
-  "bin": "./dist/index.mjs",
+  "bin": {
+    "tm": "./dist/index.mjs"
+  },
   "files": [
     "dist"
   ],
