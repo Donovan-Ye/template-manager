@@ -1,4 +1,4 @@
-# Template Manager
+# Template Manager CLI
 
 <div align="center">
   <img src="./public/icon.png" alt="Template Manager Icon" width="400" height="400">

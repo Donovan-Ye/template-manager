@@ -1,5 +1,5 @@
 {
-  "name": "template-manager",
+  "name": "template-manager-cli",
   "type": "module",
   "version": "0.1.0",
   "packageManager": "pnpm@9.9.0",
