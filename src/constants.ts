@@ -9,9 +9,14 @@ export const HOME = process.env[(process.platform === 'win32') ? 'USERPROFILE' :
 export const TM_REPO_GIT = process.env.TM_REPO_GIT
 
 /**
+ * The name of the folder that contains the templates repository.
+ */
+export const TM_REPO_FOLDER = '.tm-repo'
+
+/**
  * The name of the temporary repository that used to clone the templates repository.
  */
-export const TEMP_REMO_LOCAL_PATH = path.join(HOME, '.tm-repo')
+export const TEMP_REMO_LOCAL_PATH_PREFIX = path.join(HOME, TM_REPO_FOLDER)
 
 /**
  * The path to the .tmrc file.

@@ -3,69 +3,65 @@ import path from 'node:path'
 import process from 'node:process'
 import { Command } from 'commander'
 import prompts from 'prompts'
-import { README_INIT_CONTENT, TEMP_REMO_LOCAL_PATH, TM_FILE_INIT_CONTENT, TM_FILE_NAME, TM_README, TM_REPO_GIT } from '../constants'
-import { updateConfig, updateEnvVariable } from '../utils/config'
-import { rmLocalTemplateRepo } from '../utils/git'
+import { README_INIT_CONTENT, TM_FILE_INIT_CONTENT, TM_FILE_NAME, TM_README } from '../constants'
+import { getCurrentRemoteSource, getLocalPathWithCurrentRemoteSource } from '../utils/config'
+import { cloneTemplate, pushGitRepo } from '../utils/git'
 import { logger } from '../utils/logger'
 
 export const init = new Command()
   .name('init')
   .description('Initialize a new templates repository to manage templates.')
-  .action(async () => {
-    if (TM_REPO_GIT) {
-      logger.warn(
-        `It seems env variable 'TM_REPO_GIT' is already defined. Which is: ${TM_REPO_GIT}\n`
-        + 'If you want to re-initialize it, please delete the existing one and run the command again.',
-      )
-      process.exit(1)
+  .option('-f, --force', 'Force overwrite the existing templates repository.')
+  .action(async ({ force }: { force: boolean }) => {
+    const localPath = await getLocalPathWithCurrentRemoteSource()
+
+    if (!fs.existsSync(localPath)) {
+      const { remoteSourceData } = await getCurrentRemoteSource()
+      const { url: remoteUrl } = remoteSourceData
+      await cloneTemplate(remoteUrl, localPath)
     }
 
-    if (fs.existsSync(TEMP_REMO_LOCAL_PATH)) {
-      const { overwrite } = await prompts([
-        {
-          type: 'confirm',
-          name: 'overwrite',
-          message: `It seems that the templates repository already exists. Which is: ${TEMP_REMO_LOCAL_PATH}\n`
-          + 'Do you want to overwrite it?',
-          initial: true,
-        },
-      ])
+    const filesWillBeChecked = [
+      {
+        file: path.join(localPath, TM_FILE_NAME),
+        initialContent: TM_FILE_INIT_CONTENT,
+      },
+      {
+        file: path.join(localPath, TM_README),
+        initialContent: README_INIT_CONTENT,
+      },
+    ]
+
+    for (const { file, initialContent } of filesWillBeChecked) {
+      let overwrite = true
+      if (fs.existsSync(file)) {
+        if (!force) {
+          const { overwrite: overwriteConfirm } = await prompts([
+            {
+              type: 'confirm',
+              name: 'overwrite',
+              message: `It seems that the ${file} already exists. \n`
+              + 'Do you want to overwrite it?',
+              initial: true,
+            },
+          ])
+
+          overwrite = overwriteConfirm
+        }
+      }
 
       if (overwrite) {
-        await rmLocalTemplateRepo()
+        fs.writeFileSync(file, initialContent, {
+          flag: 'wx',
+        })
       }
       else {
-        logger.warn('Initialization cancelled.')
-        process.exit(1)
+        logger.warn(`Initialization cancelled.`)
+        process.exit(0)
       }
     }
 
-    const { remoteUrl } = await prompts([
-      {
-        type: 'text',
-        name: 'remoteUrl',
-        message: 'Enter the remote repository URL to store and managetemplates information.',
-      },
-    ])
+    await pushGitRepo(localPath, 'Init templates repository.')
 
-    if (!remoteUrl) {
-      logger.error('Remote repository URL is required.')
-      process.exit(1)
-    }
-
-    // create tm-repo and initial files
-    fs.mkdirSync(TEMP_REMO_LOCAL_PATH)
-    // if the file is not exist, create it
-    fs.writeFileSync(path.join(TEMP_REMO_LOCAL_PATH, TM_README), README_INIT_CONTENT, {
-      flag: 'wx',
-    })
-    fs.writeFileSync(path.join(TEMP_REMO_LOCAL_PATH, TM_FILE_NAME), TM_FILE_INIT_CONTENT, {
-      flag: 'wx',
-    })
-
-    updateEnvVariable('TM_REPO_GIT', remoteUrl)
-    updateConfig({ templatesExpirationTime: new Date(new Date().getTime()).toISOString() })
-    // await initGitRepo(TEMP_REMO_LOCAL_PATH, remoteUrl)
-
-    logger.success(`Templates repository initialized successfully in ${TEMP_REMO_LOCAL_PATH}.`)
+    logger.success(`Templates repository initialized successfully in ${localPath}.`)
   })

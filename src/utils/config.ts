@@ -3,21 +3,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import ini from 'ini'
-import { EXPIRATION_TIME, HOME, TMRC } from '../constants'
+import { EXPIRATION_TIME, HOME, TEMP_REMO_LOCAL_PATH_PREFIX, TMRC } from '../constants'
 import { parseObjectValue, stringifyObjectValue } from './json'
 import { logger } from './logger'
-import type { Config } from '../types/config'
-
-const defaultConfig: Config = {
-  templatesExpirationTime: new Date().toISOString(),
-}
-
-let config: Config | undefined
+import type { Config, RemoteSource, RemoteSourceData } from '../types/config'
 
 export async function getConfig(): Promise<Config> {
-  config = Object.assign(
+  const config = Object.assign(
     {},
-    defaultConfig,
     fs.existsSync(TMRC)
       ? parseObjectValue(ini.parse(fs.readFileSync(TMRC, 'utf-8')))
       : null,
@@ -26,17 +19,85 @@ export async function getConfig(): Promise<Config> {
   return config
 }
 
-export function updateConfig(newConfig: Config): void {
-  config = { ...config, ...newConfig }
+export async function updateConfig(newConfig: Config): Promise<void> {
+  const config = await getConfig()
 
-  fs.writeFileSync(TMRC, ini.stringify(stringifyObjectValue(config)))
+  fs.writeFileSync(TMRC, ini.stringify(stringifyObjectValue({ ...config, ...newConfig })))
+}
+
+/**
+ * Get all remote template sources
+ */
+export async function getRemoteSources(): Promise<RemoteSource> {
+  const config = await getConfig()
+  return config.remoteSources || {}
+}
+
+/**
+ * Get the current remote source and its data
+ */
+export async function getCurrentRemoteSource(): Promise<{ currentRemoteSource: string, remoteSourceData: RemoteSourceData }>
+export async function getCurrentRemoteSource({ warning }: { warning: boolean }): Promise<{ currentRemoteSource?: string, remoteSourceData?: RemoteSourceData }>
+export async function getCurrentRemoteSource(...args: [{ warning: boolean }?]): Promise<unknown> {
+  const { currentRemoteSource, remoteSources } = await getConfig()
+  const warning = args[0]?.warning ?? true
+  if ((!currentRemoteSource || !remoteSources?.[currentRemoteSource])) {
+    if (warning) {
+      logger.error('No current remote template source found, please run `tm remote use <name>` to set the current remote template source.')
+      process.exit(0)
+    }
+    return {
+      currentRemoteSource,
+      remoteSourceData: currentRemoteSource ? remoteSources?.[currentRemoteSource] : undefined,
+    }
+  }
+
+  return {
+    currentRemoteSource,
+    remoteSourceData: remoteSources[currentRemoteSource],
+  }
+}
+
+/**
+ * Update remote template sources
+ */
+export async function updateRemoteSources(sources: RemoteSource): Promise<void> {
+  const config = await getConfig()
+  config.remoteSources = sources
+  updateConfig(config)
+}
+
+/**
+ * Get the local path of the template repository with the current remote source
+ */
+export async function getLocalPathWithCurrentRemoteSource(): Promise<string> {
+  const { currentRemoteSource } = await getCurrentRemoteSource()
+
+  return path.join(TEMP_REMO_LOCAL_PATH_PREFIX, currentRemoteSource)
+}
+
+/**
+ * Get the local path of the template repository
+ */
+export function getLocalPath(remoteSource: string): string {
+  return path.join(TEMP_REMO_LOCAL_PATH_PREFIX, remoteSource)
 }
 
 /**
  * Update the templates expiration time to ${EXPIRATION_TIME} hours
  */
-export function updateExpirationTime(): void {
-  updateConfig({ templatesExpirationTime: new Date(new Date().getTime() + EXPIRATION_TIME).toISOString() })
+export async function updateExpirationTime(name: string): Promise<void> {
+  const remoteSource = await getRemoteSources()
+
+  updateConfig({
+    remoteSources: {
+      ...remoteSource,
+      [name]: {
+        ...remoteSource[name],
+        expirationTime: new Date(new Date().getTime() + EXPIRATION_TIME).toISOString(),
+      },
+    },
+  })
 }
 
 export function updateRCFileNotInWindows(key: string, value: string): void {

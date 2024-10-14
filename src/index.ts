@@ -9,6 +9,7 @@ import { init } from './commands/init'
 import { list } from './commands/list'
 import { open } from './commands/open'
 import { pull } from './commands/pull'
+import { remote } from './commands/remote'
 import { remove } from './commands/remove'
 import { set } from './commands/set'
 
@@ -34,6 +35,7 @@ async function main(): Promise<void> {
     .addCommand(open)
     .addCommand(create)
     .addCommand(pull)
+    .addCommand(remote)
 
   program.parse()
 }
