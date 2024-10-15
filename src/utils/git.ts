@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import simpleGit from 'simple-git'
-import { TEMP_REMO_LOCAL_PATH_PREFIX, TM_FILE_NAME, TM_README, TM_README_END, TM_README_START, TM_REPO_GIT } from '../constants'
+import { TEMP_REMO_LOCAL_PATH_PREFIX, TM_FILE_NAME, TM_README, TM_README_END, TM_README_START } from '../constants'
 import { getCurrentRemoteSource, getLocalPathWithCurrentRemoteSource, updateExpirationTime } from './config'
 import { parseJsonSafely } from './json'
 import { logger } from './logger'
@@ -25,6 +25,12 @@ export function repoPathToUrl(repoPath: string): string {
     return `https://${host}/${path}`
   }
   else if (repoPath.startsWith('http')) {
+    const regex = /^(https?:\/\/.*)\.git$/
+    const matchRes = repoPath.match(regex)
+    if (matchRes) {
+      return matchRes[1]
+    }
+
     return repoPath
   }
   return ''
@@ -139,7 +145,7 @@ export async function getTemplateFile({ force, includeHome }: TemplateOptions = 
   if (includeHome) {
     templates.unshift({
       name: 'Home',
-      path: TM_REPO_GIT ?? '',
+      path: url,
     })
   }
 
