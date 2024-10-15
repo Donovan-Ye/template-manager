@@ -16,6 +16,7 @@ Template Manager can help you manage templates in a single git repository, and y
 
 ## Features
 
+- 🌍 Support multiple remote sources for flexible template management.
 - 📂 Manage templates in a single git repository.
 - 📂 Easy to add, list, remove, update templates.
 - 🌐 Open templates in the browser quickly.
@@ -29,48 +30,118 @@ Template Manager can help you manage templates in a single git repository, and y
 npm install -g template-manager-cli
 ```
 
-### Initialize a new templates repository
+### Setting Up Your Template Repository
+
+When using Template Manager for the first time, you'll need to set up a remote template source. This is typically a GitHub repository URL.
+
+1. Add a remote template source:
+```bash
+# tm remote add <name> <source-url>
+tm remote add my-template-repo git@github.com:Donovan-Ye/template-manager.git
+```
+
+2. List your remote template sources:
+```bash
+tm remote list
+```
+
+3. Select a remote template source as your current source:
+```bash
+# tm remote use <name>
+tm remote use my-template-repo
+```
+
+4. Initialize your template repository:
 ```bash
 tm init
 ```
-Template manager will prompt you to enter the template repository URL, and then create two files: `template.json` and `README.md` in the repository. Which are neccessary for the template manager to work. When you try to add or update a template, template manager will update the `template.json` file and list the template in `README.md`.
 
-If you already have a templates repository, you can skip the initialization step. But you need to:
-  1. create a Env variable named `TM_REPO_GIT` with the value as your templates repository URL.
-  2. create a `template.json` file in the repository, with the following content:
-```json
-[
-  {
-    "name": "template-name",
-    "path": "template-path"
-  }
-]
-```
-  3. create a `README.md` file in the repository, with a placeholder for the templates list(`<!-- tm-list-start -->` and `<!-- tm-list-end -->`). For example:
-```md
-# My Templates Repository
+This command sets up your repository with the necessary files: `template.json` and `README.md`. If these files already exist, you'll be prompted to overwrite them.
 
-## List
-<!-- tm-list-start -->
+For more details on the `tm remote` command, use `tm remote -h`.
 
-<!-- tm-list-end -->
-```
+#### Manual Setup (Optional)
 
-### Add a new template
+If you prefer not to use the `tm init` command, ensure you have the following files in your repository:
+
+1. `template.json`:
+   ```json
+   [
+     {
+       "name": "template-name",
+       "path": "template-path"
+     }
+   ]
+   ```
+
+2. `README.md` with placeholders `<!-- tm-list-start -->` and `<!-- tm-list-end -->` for the template list:
+   ```md
+   # My Templates Repository
+
+   ## My templates
+   <!-- tm-list-start -->
+
+   <!-- tm-list-end -->
+   ```
+
+### Managing Your Templates
+
+Once your repository is set up, you can start managing your templates:
+
+- Add a new template:
 ```bash
+# tm add <template-name> <template-path>
 tm add template-name template-path
 ```
 
-### List all templates
+- List all templates:
 ```bash
 tm list
 ```
-### Other commands
 
-You can use `tm -h` to get the help information for each command. Which are also listed below.
+- Update an existing template:
+```bash
+# tm set <template-name> <template-path>
+tm set template-name new-template-path
+```
+
+- Pull a template from the remote repository:
+```bash
+# tm pull [template-name]
+tm pull template-name
+# or don't specify the template name, it will pull all templates from the remote repository
+tm pull
+```
+
+- Create a new project from a template, it will clone the template to your local and remove the git history:
+```bash
+# tm create [template-name]
+tm create template-name
+# or don't specify the template name, it will prompt you to choose one from the template list
+tm create
+```
+
+- Open a template in the browser:
+```bash
+# tm open [template-name]
+tm open template-name
+# or don't specify the template name, it will prompt you to choose one from the template list
+tm open
+```
+
+- Remove a template:
+```bash
+# tm remove [template-name]
+tm remove template-name
+# or don't specify the template name, it will remove all templates
+tm remove
+```
+
+For a complete list of commands and their usage, run `tm -h`.
 
 ## Usage
 
+### Global Options
 ```bash
 Usage: tm [options] [command]
 
@@ -81,16 +152,34 @@ Options:
   -h, --help             display help for command
 
 Commands:
-  init                   Initialize a new templates repository to manage templates.
+  remote                 Manage remote template sources
+  init [options]         Initialize current remote source repository with initial files.
   add <template> <path>  Add a new template.
-  list|ls [options]      List all available templates from your template repository, will be cached for 1 hour.
-                         You can use -f to force to get templates from the template repository.
+  list|ls [options]      List all available templates from your template repository, will be cached for 1 hour. You can use -f to force to get
+                         templates from the template repository.
   set <template> <path>  Update a template to a path.
   remove|rm [template]   Remove a template.
   open                   Choose a template to open in the browser.
   create                 Choose a template to create a new project, all the git history will be removed.
   pull                   Pull a template from the remote repository, all the git history will be preserved.
   help [command]         display help for command
+```
+
+### Remote Commands
+```bash
+Usage: tm remote [options] [command]
+
+Manage remote template sources
+
+Options:
+  -h, --help               display help for command
+
+Commands:
+  list|ls                  List all remote template sources
+  add <name> <source-url>  Add a remote template source
+  remove|rm <name>         Remove a remote template source
+  use <name>               Use a remote template source
+  help [command]           display help for command
 ```
 
 ## License

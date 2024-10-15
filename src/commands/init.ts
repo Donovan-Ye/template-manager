@@ -10,7 +10,7 @@ import { logger } from '../utils/logger'
 
 export const init = new Command()
   .name('init')
-  .description('Initialize a new templates repository to manage templates.')
+  .description('Initialize current remote source repository with initial files.')
   .option('-f, --force', 'Force overwrite the existing templates repository.')
   .action(async ({ force }: { force: boolean }) => {
     const localPath = await getLocalPathWithCurrentRemoteSource()
@@ -51,6 +51,7 @@ export const init = new Command()
       }
 
       if (overwrite) {
+        fs.rmSync(file, { force: true, recursive: true })
         fs.writeFileSync(file, initialContent, {
           flag: 'wx',
         })

@@ -27,6 +27,7 @@ async function main(): Promise<void> {
     )
 
   program
+    .addCommand(remote)
     .addCommand(init)
     .addCommand(add)
     .addCommand(list)
@@ -35,7 +36,6 @@ async function main(): Promise<void> {
     .addCommand(open)
     .addCommand(create)
     .addCommand(pull)
-    .addCommand(remote)
 
   program.parse()
 }
