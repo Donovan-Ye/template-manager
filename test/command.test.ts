@@ -14,6 +14,8 @@ function expectSources(output: string, sources: string[]) {
 let currentRemoteSource: string | undefined
 const testRemoteName = 'vitest_test_name'
 const testRemoteUrl = './test/test_repo'
+const testTemplateName = 'vitest_test_template_name'
+const testTemplatePath = './test-template'
 
 describe('commands flow test', () => {
   beforeAll(async () => {
@@ -68,9 +70,39 @@ describe('commands flow test', () => {
     expect(init).toContain('initialized successfully')
   })
 
-  it('tm list|ls with templates config file', async () => {
-    // const ls = tm('list')
-    // console.log('ls', ls)
+  it('tm list|ls with templates config file and no templates', async () => {
+    const ls = tm('list')
+
+    expect(ls).toContain(`Getting templates from ${testRemoteUrl}`)
+    expect(ls).toContain('No templates found')
+  })
+
+  it('tm add <template> <path>', async () => {
+    const add = tm(`add ${testTemplateName} ${testTemplatePath}`)
+
+    expect(add).toContain('Template added successfully')
+
+    const ls = tm('list')
+    expect(ls).toContain(testTemplateName)
+  })
+
+  it('tm set <template> <name>', async () => {
+    const newTemplateName = 'vitest_test_template_name_new'
+    const set = tm(`set ${testTemplateName} ${newTemplateName}`)
+
+    expect(set).toContain('Template updated successfully')
+
+    const ls = tm('list')
+    expect(ls).toContain(newTemplateName)
+  })
+
+  it('tm remove|rm [template]', async () => {
+    const remove = tm(`remove ${testTemplateName}`)
+
+    expect(remove).toContain('Template removed successfully')
+
+    const ls = tm('list')
+    expect(ls).not.toContain(testTemplateName)
   })
 
   // ----clean remote----

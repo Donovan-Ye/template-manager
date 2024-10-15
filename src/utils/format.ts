@@ -33,7 +33,7 @@ export function listFormattedContents(contents: Content[], { hintMessage, select
 
   const messages = contents.map((content) => {
     const isSelected = selectedName === content.label
-    return `${isSelected ? chalk.green('* ') : '  '}${content.label}${geneDashLine(content.label, length)}${content.value}`
+    return `${isSelected ? chalk.green('* ') : '○ '}${content.label}${geneDashLine(content.label, length)}${content.value}`
   })
 
   logger.log(`${messages.join('\n')}`)

@@ -112,7 +112,6 @@ export async function getTemplateFile({ force, includeHome }: TemplateOptions = 
   // read the repository from the local path
   const localPath = await getLocalPathWithCurrentRemoteSource()
   const templateExist = fs.existsSync(localPath)
-  let templateRepository: string[] = []
 
   // if template repository is not in local or is expired or force is true, clone the repository from the remote repository
   if (!templateExist || isExpired || force) {
@@ -123,11 +122,10 @@ export async function getTemplateFile({ force, includeHome }: TemplateOptions = 
     }
 
     await cloneTemplate(url, localPath)
-    templateRepository = fs.readdirSync(localPath)
-
     updateExpirationTime(currentRemoteSource)
   }
 
+  const templateRepository = fs.readdirSync(localPath)
   const templateFile = templateRepository.find(file => file === TM_FILE_NAME)
 
   if (!templateFile) {

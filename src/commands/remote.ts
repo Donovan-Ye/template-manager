@@ -85,9 +85,9 @@ const remove = new Command()
 
     logger.success(`Remote template source '${name}' removed successfully\n`)
 
-    logger.info('Switching to the first remote template source...')
-    const { currentRemoteSource } = await getCurrentRemoteSource()
+    const { currentRemoteSource } = await getCurrentRemoteSource({ warning: false })
     if (name === currentRemoteSource) {
+      logger.info('Switching to the first remote template source...')
       const firstSource = Object.keys(newSources)[0]
       if (!firstSource) {
         updateConfig({ currentRemoteSource: undefined })
