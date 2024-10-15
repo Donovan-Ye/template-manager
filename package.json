@@ -1,7 +1,7 @@
 {
   "name": "template-manager-cli",
   "type": "module",
-  "version": "0.1.7",
+  "version": "1.0.0",
   "packageManager": "pnpm@9.9.0",
   "description": "A CLI tool to manage your project templates.",
   "author": "DonovanYe <xxiaozhiyzj@gmail.com>",
