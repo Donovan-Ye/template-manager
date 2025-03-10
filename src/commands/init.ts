@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import fs from 'node:fs'
 import process from 'node:process'
 import { Command } from 'commander'
@@ -19,13 +20,23 @@ export const init = new Command()
   .description('初始化当前项目下的私有源的相关配置（.npmrc 和 package.json）')
   .option('-u, --update', '更新配置文件，仅更新registry, @scope:registry 和 publishConfig')
   .action(async ({ update }: { update: boolean }) => {
-    const packageJson = fs.readFileSync(PACKAGE_JSON_PROJECT, 'utf-8')
-    if (!packageJson) {
+    let packageJson: string
+    try {
+      packageJson = fs.readFileSync(PACKAGE_JSON_PROJECT, 'utf-8')
+    }
+    catch (error) {
       logger.error('当前项目下没有 package.json 文件')
       process.exit(1)
     }
 
-    const npmrcConfig = ini.parse(fs.readFileSync(NPMRC_PROJECT, 'utf-8')) || {}
+    let npmrcConfig: Record<string, string> = {}
+    try {
+      npmrcConfig = ini.parse(fs.readFileSync(NPMRC_PROJECT, 'utf-8')) || {}
+    }
+    catch (error) {
+      logger.warn('当前项目下没有 .npmrc 文件，稍后会自动创建')
+    }
+
     for (const { key, value } of UPDATING_NPMRC_CONFIG) {
       if (!npmrcConfig[key]) {
         logger.info(`当前项目的.npmrc 文件中没有 ${key} 配置，正在初始化...`)
