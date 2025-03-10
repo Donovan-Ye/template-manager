@@ -1,7 +1,7 @@
 {
   "name": "@meta-carbon/mpm",
   "publishConfig": {
-    "@meta-carbon:registry": "http://nexus.metac-inc.com/repository/npm-gourp/"
+    "@meta-carbon:registry": "http://nexus.metac-inc.com/repository/npm-hosted/"
   },
   "type": "module",
   "version": "1.0.0",

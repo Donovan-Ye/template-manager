@@ -7,8 +7,8 @@ import {
   NPMRC_PROJECT,
   PACKAGE_JSON_PROJECT,
   PUBLISH_CONFIG_KEY,
+  PUBLISH_VAL_SCOPE,
   REGISTRY_KEY_SCOPE,
-  REGISTRY_VAL_SCOPE,
   UPDATING_NPMRC_CONFIG,
 } from '../constants'
 import { logger } from '../utils/logger'
@@ -57,7 +57,7 @@ export const init = new Command()
     if (!publishConfig?.[REGISTRY_KEY_SCOPE]) {
       logger.info('当前项目package.json 中没有publishConfig[@scope:registry]相关配置，正在初始化...')
 
-      updatePackageJson(packageJsonObj, REGISTRY_KEY_SCOPE, REGISTRY_VAL_SCOPE)
+      updatePackageJson(packageJsonObj, REGISTRY_KEY_SCOPE, PUBLISH_VAL_SCOPE)
     }
     else {
       let overwrite = update
@@ -73,7 +73,7 @@ export const init = new Command()
       }
       if (overwrite) {
         logger.info('当前项目package.json 中已存在publishConfig[@scope:registry]相关配置，正在更新...')
-        updatePackageJson(packageJsonObj, REGISTRY_KEY_SCOPE, REGISTRY_VAL_SCOPE)
+        updatePackageJson(packageJsonObj, REGISTRY_KEY_SCOPE, PUBLISH_VAL_SCOPE)
       }
     }
 
