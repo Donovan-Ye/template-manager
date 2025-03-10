@@ -4,7 +4,7 @@
     "@meta-carbon:registry": "http://nexus.metac-inc.com/repository/npm-hosted/"
   },
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@9.9.0",
   "description": "CLI tool to handle private source related configurations.",
   "author": "DonovanYe <xxiaozhiyzj@gmail.com>",
