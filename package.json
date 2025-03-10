@@ -1,18 +1,17 @@
 {
-  "name": "template-manager-cli",
+  "name": "@meta-carbon/mpm",
+  "publishConfig": {
+    "@meta-carbon:registry": "http://nexus.metac-inc.com/repository/npm-gourp/"
+  },
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "packageManager": "pnpm@9.9.0",
-  "description": "A CLI tool to manage your project templates.",
+  "description": "CLI tool to handle private source related configurations.",
   "author": "DonovanYe <xxiaozhiyzj@gmail.com>",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Donovan-Ye/template-manager.git"
-  },
   "keywords": [
-    "template",
-    "cli",
+    "private registry",
+    "registry",
     "manager"
   ],
   "sideEffects": false,
@@ -35,7 +34,7 @@
     }
   },
   "bin": {
-    "tm": "./dist/index.mjs"
+    "mpm": "./dist/index.mjs"
   },
   "files": [
     "dist"
