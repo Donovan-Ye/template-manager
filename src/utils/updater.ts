@@ -1,10 +1,11 @@
 import fs from 'node:fs'
 import ini from 'ini'
 import { NPMRC_PROJECT, PACKAGE_JSON_PROJECT, PUBLISH_CONFIG_KEY } from '../constants'
+import { readLocalFile } from './reader'
 
 export function updateNpmrc(key: string, value: string): void {
   // 这里需要每次读取文件，不能直接传入，因为可能会更新多次，如果直接传入，会导致部分更新丢失
-  const npmrcConfig = ini.parse(fs.readFileSync(NPMRC_PROJECT, 'utf-8')) || {}
+  const npmrcConfig = ini.parse(readLocalFile(NPMRC_PROJECT)) || {}
   // 将新的键值对放在配置对象的最前面
   const newConfig = { [key]: value }
   for (const k in npmrcConfig) {

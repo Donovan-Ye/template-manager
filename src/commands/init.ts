@@ -1,5 +1,4 @@
 /* eslint-disable unused-imports/no-unused-vars */
-import fs from 'node:fs'
 import process from 'node:process'
 import { Command } from 'commander'
 import ini from 'ini'
@@ -13,6 +12,7 @@ import {
   UPDATING_NPMRC_CONFIG,
 } from '../constants'
 import { logger } from '../utils/logger'
+import { readLocalFile } from '../utils/reader'
 import { updateNpmrc, updatePackageJson } from '../utils/updater'
 
 export const init = new Command()
@@ -22,7 +22,7 @@ export const init = new Command()
   .action(async ({ update }: { update: boolean }) => {
     let packageJson: string
     try {
-      packageJson = fs.readFileSync(PACKAGE_JSON_PROJECT, 'utf-8')
+      packageJson = readLocalFile(PACKAGE_JSON_PROJECT)
     }
     catch (error) {
       logger.error('当前项目下没有 package.json 文件')
@@ -31,7 +31,7 @@ export const init = new Command()
 
     let npmrcConfig: Record<string, string> = {}
     try {
-      npmrcConfig = ini.parse(fs.readFileSync(NPMRC_PROJECT, 'utf-8')) || {}
+      npmrcConfig = ini.parse(readLocalFile(NPMRC_PROJECT)) || {}
     }
     catch (error) {
       logger.warn('当前项目下没有 .npmrc 文件，稍后会自动创建')
